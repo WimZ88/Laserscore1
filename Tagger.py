@@ -10,32 +10,36 @@ import threading
 import time
 
 # Create a sample Pandas DataFrame
-data = {
+test_data = {
     'Name': ['Alice', 'Bob', 'Charlie', 'David'],
     'Age': [25, 30, 35, 40],
     'City': ['New York', 'Los Angeles', 'Chicago', 'Houston']
 }
 
 
-df = pd.DataFrame(data)
+# df = pd.DataFrame(data)
+
+class GameData:
+    def __init__(self):
+        self.gun_list=pd.DataFrame(data=test_data)
 
 # df = pd.DataFrame(data={'col1': [1, 2], 'col2': [3, 4]})
+game_data = GameData()
 
-grid1 = ui.aggrid.from_pandas(df).classes('max-h-40')
-grid2 = ui.aggrid.from_pandas(df).classes('max-h-40')
+gun_table = ui.aggrid.from_pandas(game_data.gun_list).classes('max-h-40')
 
 new_row = {'Name': 'Eve', 'Age': 28, 'City': 'Miami'}
 
 # Append the new row to the DataFrame
 
 def add_row():
-    global df
+    global game_data
     while True:
         new_row = {'Name': 'Eve', 'Age': 28, 'City': 'Miami'}
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-        grid2.rowdata = df.to_dict(orient='records')
-        grid2.update()  # Update the NiceGUI interface NOT WORKING
-        ui.update()
+        game_data.gun_list = pd.concat([game_data.gun_list, pd.DataFrame([new_row])], ignore_index=True)
+        # grid2.rowdata = df.to_dict(orient='records')
+        # grid2.update()  # Update the NiceGUI interface NOT WORKING
+        # ui.update()
         time.sleep(5)  # Sleep for 5 seconds before adding another row
 
 # Start the thread
@@ -44,11 +48,15 @@ update_thread.daemon = True
 update_thread.start()
 
 def update():
-    grid2.options['rowData'][0]['Age'] += 1
+    gun_table.options['rowData'][0]['Age'] += 1
     # grid2.rowdata = df.to_dict(orient='records')
-    grid2.update()
+    gun_table.update()
 
 ui.button('Update', on_click=update)
+v = ui.checkbox('visible', value= True )
+with ui.column().bind_visibility_from(v,'value'):
+    ui.aggrid.from_pandas(game_data.gun_list).bind_value(game_data,'gun_list')
+
 
 # Display the DataFrame using NiceGUI
 ui.run(port=9000)
