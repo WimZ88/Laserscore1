@@ -30,8 +30,10 @@ age = 103
 
 
 def rx_UDP():
+    host_port = ('0.0.0.0', 15677)
+    print("Start listening on",host_port)
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_socket.bind(('0.0.0.0', 15677))  # Listen on all available interfaces
+    udp_socket.bind(host_port)  # Listen on all available interfaces
     while True:
         data, addr = udp_socket.recvfrom(1024)  # blocking wait for packet
         rx_queue.put(data.decode('utf-8', errors='ignore'))
@@ -39,6 +41,7 @@ def rx_UDP():
 
 def process_UDP():
     global age, gun_info
+    print("Start processing data")
     while True:
         while not rx_queue.empty():
             new_row = {'Name': 'Eve', 'Age': age, 'City': 'Miami'}
