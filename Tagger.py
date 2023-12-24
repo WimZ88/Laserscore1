@@ -1,9 +1,5 @@
 """
-in python write a nicegui app with the following specs.
-it shows a table with list of 5 dicts {"Tagno": no, "score": score} incrementing no and score.
-add a thread the fils a queu with {"Tagno": no, "score": score} every second
-the table element is expanded with the new item in the queu
-use port 8081 for the ui run.
+
 """
 
 # Import the required modules
@@ -38,7 +34,7 @@ def add_row():
         new_row = {'Name': 'Eve', 'Age': 28, 'City': 'Miami'}
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
         grid2.rowdata = df.to_dict(orient='records')
-        grid2.update()  # Update the NiceGUI interface
+        grid2.update()  # Update the NiceGUI interface NOT WORKING
         ui.update()
         time.sleep(5)  # Sleep for 5 seconds before adding another row
 
